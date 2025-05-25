@@ -17,32 +17,42 @@ db.connect(err => {
     console.log('✅ Conectado a MySQL');
 });
 
-exports.obtenerPeliculas = (req, res, next) => {
-    db.query('SELECT * FROM Peliculas', (err, results) => {
+// 🟢 GET: obtener todas las películas
+exports.obtenerPeliculas = (req, res) => {
+    db.query('SELECT * FROM peliculas', (err, results) => { // usa minúsculas
         if (err) {
-            console.error('Error en la consulta:', err);  // 👈 Agrega esto
-            return next(new Error('Error al obtener películas'));
+            console.error('❌ Error al obtener películas:', err);
+            return res.status(500).json({ error: 'Error al obtener películas' });
         }
         res.json(results);
     });
 };
 
-
+// 🟢 POST: insertar una película
 exports.insertarPelicula = (req, res) => {
-    const { titulo, director, genero, anio, descripcion } = req.body;
+    const { id, titulo, director, genero, anio, descripcion } = req.body;
+
+    // ahora id se inserta manualmente
     db.query(
-        'INSERT INTO Peliculas (titulo, director, genero, anio, descripcion) VALUES (?, ?, ?, ?, ?)',
-        [titulo, director, genero, anio, descripcion],
+        'INSERT INTO peliculas (id, titulo, director, genero, anio, descripcion) VALUES (?, ?, ?, ?, ?, ?)',
+        [id, titulo, director, genero, anio, descripcion],
         (err, result) => {
-            if (err) return res.status(500).send('Error al insertar');
+            if (err) {
+                console.error('❌ Error al insertar:', err);
+                return res.status(500).json({ error: 'Error al insertar película' });
+            }
             res.json({ id: result.insertId, mensaje: 'Película agregada' });
         }
     );
 };
 
+// 🟢 DELETE: eliminar por ID
 exports.eliminarPelicula = (req, res) => {
-    db.query('DELETE FROM Peliculas WHERE id = ?', [req.params.id], err => {
-        if (err) return res.status(500).send('Error al eliminar');
+    db.query('DELETE FROM peliculas WHERE id = ?', [req.params.id], err => {
+        if (err) {
+            console.error('❌ Error al eliminar:', err);
+            return res.status(500).json({ error: 'Error al eliminar película' });
+        }
         res.send('Película eliminada');
     });
 };
