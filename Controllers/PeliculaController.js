@@ -20,6 +20,7 @@ db.connect(err => {
 exports.obtenerPeliculas = (req, res, next) => {
     db.query('SELECT * FROM Peliculas', (err, results) => {
         if (err) {
+            console.error('Error en la consulta:', err);  // 👈 Agrega esto
             return next(new Error('Error al obtener películas'));
         }
         res.json(results);
