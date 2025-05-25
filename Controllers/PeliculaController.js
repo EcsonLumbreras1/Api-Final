@@ -19,7 +19,7 @@ db.connect(err => {
 
 // 🟢 GET: obtener todas las películas
 exports.obtenerPeliculas = (req, res) => {
-    db.query('SELECT * FROM peliculas', (err, results) => { // usa minúsculas
+    db.query('SELECT * FROM Peliculas', (err, results) => { // usa minúsculas
         if (err) {
             console.error('❌ Error al obtener películas:', err);
             return res.status(500).json({ error: 'Error al obtener películas' });
@@ -34,7 +34,7 @@ exports.insertarPelicula = (req, res) => {
 
     // ahora id se inserta manualmente
     db.query(
-        'INSERT INTO peliculas (id, titulo, director, genero, anio, descripcion) VALUES (?, ?, ?, ?, ?, ?)',
+        'INSERT INTO Peliculas (id, titulo, director, genero, anio, descripcion) VALUES (?, ?, ?, ?, ?, ?)',
         [id, titulo, director, genero, anio, descripcion],
         (err, result) => {
             if (err) {
@@ -48,7 +48,7 @@ exports.insertarPelicula = (req, res) => {
 
 // 🟢 DELETE: eliminar por ID
 exports.eliminarPelicula = (req, res) => {
-    db.query('DELETE FROM peliculas WHERE id = ?', [req.params.id], err => {
+    db.query('DELETE FROM Peliculas WHERE id = ?', [req.params.id], err => {
         if (err) {
             console.error('❌ Error al eliminar:', err);
             return res.status(500).json({ error: 'Error al eliminar película' });
