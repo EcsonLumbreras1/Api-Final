@@ -20,14 +20,14 @@ db.connect(err => {
 });
 
 // 📥 Obtener todas las películas
-exports.obtenerPeliculas = (req, res) => {
-    console.log('🎬 Obteniendo películas...');
-  
+exports.obtenerPeliculas = (req, res, next) => {
+    console.log('📥 Petición recibida en /api/peliculas');
     db.query('SELECT * FROM Peliculas', (err, results) => {
       if (err) {
         console.error('❌ Error en SELECT:', err.message);
         return res.status(500).json({ error: 'Error al obtener las películas' });
       }
+      console.log('✅ Películas obtenidas:', results.length);
       res.json(results);
     });
   };
