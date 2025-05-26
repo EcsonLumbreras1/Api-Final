@@ -22,7 +22,7 @@ db.connect(err => {
 // 📥 Obtener todas las películas
 exports.obtenerPeliculas = (req, res, next) => {
     console.log('📥 Petición recibida en /api/peliculas');
-    db.query('SELECT * FROM Peliculas', (err, results) => {
+    db.query('SELECT * FROM Pelicula', (err, results) => {
       if (err) {
         console.error('❌ Error en SELECT:', err.message);
         return res.status(500).json({ error: 'Error al obtener las películas' });
@@ -42,7 +42,7 @@ exports.insertarPelicula = (req, res) => {
   }
 
   db.query(
-    'INSERT INTO Peliculas (id, titulo, director, genero, anio, descripcion) VALUES (?, ?, ?, ?, ?, ?)',
+    'INSERT INTO Pelicula (id, titulo, director, genero, anio, descripcion) VALUES (?, ?, ?, ?, ?, ?)',
     [id, titulo, director, genero, anio, descripcion],
     (err, result) => {
       if (err) {
@@ -58,7 +58,7 @@ exports.insertarPelicula = (req, res) => {
 exports.eliminarPelicula = (req, res) => {
   const { id } = req.params;
 
-  db.query('DELETE FROM Peliculas WHERE id = ?', [id], err => {
+  db.query('DELETE FROM Pelicula WHERE id = ?', [id], err => {
     if (err) {
       console.error('❌ Error en DELETE:', err.message);
       return res.status(500).send('Error al eliminar');
