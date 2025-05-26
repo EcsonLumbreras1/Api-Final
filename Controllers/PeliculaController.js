@@ -2,57 +2,43 @@ require('dotenv').config();
 const mysql = require('mysql2');
 
 const db = mysql.createConnection({
-    host: process.env.DB_HOST,
-    user: process.env.DB_USER,
-    password: process.env.DB_PASSWORD,
-    database: process.env.DB_NAME,
-    port: process.env.DB_PORT
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_NAME,
+  port: process.env.DB_PORT
 });
 
 db.connect(err => {
-    if (err) {
-        console.error('❌ Error al conectar a la BD:', err);
-        return;
-    }
-    console.log('✅ Conectado a MySQL');
+  if (err) {
+    console.error('❌ Error al conectar a la BD:', err);
+    return;
+  }
+  console.log('✅ Conectado a MySQL');
 });
 
-// 🟢 GET: obtener todas las películas
-exports.obtenerPeliculas = (req, res) => {
-    db.query('SELECT * FROM Peliculas', (err, results) => { // usa minúsculas
-        if (err) {
-            console.error('❌ Error al obtener películas:', err);
-            return res.status(500).json({ error: 'Error al obtener películas' });
-        }
-        res.json(results);
-    });
+exports.obtenerPeliculas = (req, res, next) => {
+  db.query('SELECT * FROM Peliculas', (err, results) => {
+    if (err) return next(err);
+    res.json(results);
+  });
 };
 
-// 🟢 POST: insertar una película
 exports.insertarPelicula = (req, res) => {
-    const { id, titulo, director, genero, anio, descripcion } = req.body;
-
-    // ahora id se inserta manualmente
-    db.query(
-        'INSERT INTO Peliculas (id, titulo, director, genero, anio, descripcion) VALUES (?, ?, ?, ?, ?, ?)',
-        [id, titulo, director, genero, anio, descripcion],
-        (err, result) => {
-            if (err) {
-                console.error('❌ Error al insertar:', err);
-                return res.status(500).json({ error: 'Error al insertar película' });
-            }
-            res.json({ id: result.insertId, mensaje: 'Película agregada' });
-        }
-    );
+  const { id, titulo, director, genero, anio, descripcion } = req.body;
+  db.query(
+    'INSERT INTO Peliculas (id, titulo, director, genero, anio, descripcion) VALUES (?, ?, ?, ?, ?, ?)',
+    [id, titulo, director, genero, anio, descripcion],
+    (err, result) => {
+      if (err) return res.status(500).send('Error al insertar');
+      res.json({ mensaje: 'Película agregada', id: result.insertId });
+    }
+  );
 };
 
-// 🟢 DELETE: eliminar por ID
 exports.eliminarPelicula = (req, res) => {
-    db.query('DELETE FROM Peliculas WHERE id = ?', [req.params.id], err => {
-        if (err) {
-            console.error('❌ Error al eliminar:', err);
-            return res.status(500).json({ error: 'Error al eliminar película' });
-        }
-        res.send('Película eliminada');
-    });
+  db.query('DELETE FROM Peliculas WHERE id = ?', [req.params.id], err => {
+    if (err) return res.status(500).send('Error al eliminar');
+    res.send('Película eliminada');
+  });
 };

@@ -5,19 +5,18 @@ const app = express();
 const peliculaRouter = require('./Router/Pelicularouter');
 const swaggerUI = require('swagger-ui-express');
 const YAML = require('yamljs');
-const fs = require('fs');
 const winston = require('winston');
+const fs = require('fs');
 
-// 📘 Swagger
+// Documentación Swagger
 let swaggerDocument;
 try {
   swaggerDocument = YAML.load('./swagger.yaml');
 } catch (error) {
-  console.error('❌ Error al cargar swagger.yaml:', error.message);
-  process.exit(1);
+  console.warn('⚠️ Swagger no encontrado o inválido');
 }
 
-// 🔒 Winston Logger
+// Logger
 const logger = winston.createLogger({
   level: 'error',
   format: winston.format.combine(
@@ -32,9 +31,11 @@ const logger = winston.createLogger({
 // Middlewares
 app.use(express.json());
 app.use('/api/peliculas', peliculaRouter);
-app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(swaggerDocument));
+if (swaggerDocument) {
+  app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(swaggerDocument));
+}
 
-// Manejo de errores global
+// Manejo de errores
 app.use((err, req, res, next) => {
   logger.error({
     message: err.message,
@@ -43,12 +44,10 @@ app.use((err, req, res, next) => {
     method: req.method,
     body: req.body
   });
-
-  res.status(500).json({ error: 'Ocurrió un error en el servidor' });
+  res.status(500).json({ error: 'Error interno del servidor' });
 });
 
-// 🌐 Configurar puerto para Railway
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-  console.log(`Servidor corriendo en el puerto ${PORT}`);
+  console.log(`🚀 Servidor corriendo en http://localhost:${PORT}`);
 });
