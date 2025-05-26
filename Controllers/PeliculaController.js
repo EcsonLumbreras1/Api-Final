@@ -20,15 +20,17 @@ db.connect(err => {
 });
 
 // 📥 Obtener todas las películas
-exports.obtenerPeliculas = (req, res, next) => {
-  db.query('SELECT * FROM peliculas', (err, results) => {
-    if (err) {
-      console.error('❌ Error en SELECT:', err.message);
-      return res.status(500).json({ error: 'Error al obtener las películas' });
-    }
-    res.json(results);
-  });
-};
+exports.obtenerPeliculas = (req, res) => {
+    console.log('🎬 Obteniendo películas...');
+  
+    db.query('SELECT * FROM peliculas', (err, results) => {
+      if (err) {
+        console.error('❌ Error en SELECT:', err.message);
+        return res.status(500).json({ error: 'Error al obtener las películas' });
+      }
+      res.json(results);
+    });
+  };
 
 // ➕ Insertar una nueva película
 exports.insertarPelicula = (req, res) => {
