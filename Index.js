@@ -2,7 +2,7 @@ require('dotenv').config();
 const express = require('express');
 const app = express();
 
-const peliculaRouter = require('./Router/Pelicularouter');
+const peliculaRouter = require('./Router/Pelicularouter.js');
 const swaggerUI = require('swagger-ui-express');
 const YAML = require('yamljs');
 const winston = require('winston');
