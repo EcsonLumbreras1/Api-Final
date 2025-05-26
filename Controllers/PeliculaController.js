@@ -23,7 +23,7 @@ db.connect(err => {
 exports.obtenerPeliculas = (req, res) => {
     console.log('🎬 Obteniendo películas...');
   
-    db.query('SELECT * FROM peliculas', (err, results) => {
+    db.query('SELECT * FROM Peliculas', (err, results) => {
       if (err) {
         console.error('❌ Error en SELECT:', err.message);
         return res.status(500).json({ error: 'Error al obtener las películas' });
